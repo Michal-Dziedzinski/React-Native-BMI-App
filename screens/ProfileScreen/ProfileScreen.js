@@ -1,34 +1,48 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Input } from '../../components/input';
-import { Button } from '../../components/button';
-import { Avatar } from '../../components/avatar';
-import { RadioButtons } from '../../components/radioButton';
+import React from "react";
+import { StyleSheet, View } from "react-native";
+import Avatar from "../../components/Avatar";
+import Button from "../../components/Button";
+import Input from "../../components/Input";
+import RadioButtons from "../../components/RadioButtons";
 
 export default class ProfileScreen extends React.Component {
-  state = {
-    height: '188',
-    name: 'Mateusz',
-    birthDate: '01.01.1980',
-    gender: ''
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: "",
+      height: "",
+      birthDate: "",
+      gender: "male",
+    };
+  }
+
+  onChangeName = value => {
+    this.setState({
+      name: value,
+    });
   };
 
   onChangeHeight = value => {
-    this.setState({ height: value });
+    this.setState({
+      height: value,
+    });
   };
-  onChangeName = value => {
-    this.setState({ name: value });
+
+  onChangeBirthDate = value => {
+    this.setState({
+      birthDate: value,
+    });
   };
-  onChangeBirthName = value => {
-    this.setState({ birthDate: value });
+
+  onRadioButtonPress = value => () => {
+    console.log("value", value);
+    this.setState({ gender: value });
   };
 
   onPressButton = () => {
-    console.log(this.state.weight);
-    console.log(this.state.date);
-  };
-  onRadioButtonPress = value => () => {
-    this.setState({ gender: value });
+    console.log("name", this.state.name);
+    console.log("height", this.state.height);
+    console.log("birthDate", this.state.birthDate);
   };
 
   render() {
@@ -36,32 +50,34 @@ export default class ProfileScreen extends React.Component {
       <View style={styles.mainView}>
         <View style={styles.container}>
           <Avatar />
-          <Text style={{ fontSize: 30 }}>{this.state.BMI}</Text>
+
           <Input
             onChangeText={this.onChangeName}
-            label='Name'
+            label="Name"
             value={this.state.name}
-            placeholder='Name'
-          />
-          <Input
-            onChangeText={this.onChangeBirthDate}
-            keyboardType='numeric'
-            label='Birth Date'
-            value={this.state.birthDate}
-            placeholder='Birth Date'
+            placeholder="Name"
           />
           <Input
             onChangeText={this.onChangeHeight}
-            label='Height'
-            keyboardType='numeric'
+            label="Height"
+            keyboardType="numeric"
             value={this.state.height}
-            placeholder='Height'
+            placeholder="Height"
           />
+          <Input
+            onChangeText={this.onChangeBirthDate}
+            label="Birth Date"
+            keyboardType="numeric"
+            value={this.state.birthDate}
+            placeholder="Birth Date"
+          />
+
           <RadioButtons
             currentValue={this.state.gender}
             onPress={this.onRadioButtonPress}
           />
-          <Button onPressButton={this.onPressButton} text='Save' />
+
+          <Button onPress={this.onPressButton} text="SAVE" />
         </View>
       </View>
     );
@@ -71,17 +87,17 @@ export default class ProfileScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     marginHorizontal: 20,
-    marginVertical: 40
+    marginVertical: 40,
   },
   listContainer: {
     flex: 1,
-    width: '100%',
-    marginTop: 20
+    width: "100%",
+    marginTop: 20,
   },
   mainView: {
     flex: 1,
-    backgroundColor: '#D7E8FF'
-  }
+    backgroundColor: "#D7E8FF",
+  },
 });

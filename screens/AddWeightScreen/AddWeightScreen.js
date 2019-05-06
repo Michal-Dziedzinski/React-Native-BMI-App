@@ -1,47 +1,117 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Input } from '../../components/input';
-import { Button } from '../../components/button';
+import { Platform } from "expo-core";
+
+import React from "react";
+import {
+  StyleSheet,
+  View,
+  DatePickerIOS,
+  DatePickerAndroid,
+  AsyncStorage,
+} from "react-native";
+
+import Button from "../../components/Button";
+
+import Input from "../../components/Input";
 
 export default class AddWeightScreen extends React.Component {
-  state = {
-    weight: '90',
-    date: '01.04.2019'
+  constructor(props) {
+    super(props);
+
+    this.state = this.getDate(props);
+  }
+
+  saveNewWeights =  async (weight, date) => {
+    const weights = this.props.navigation.getParam('weights', [])
+    weights.push({
+      id: new Date().valueOf(),
+      value: weight,
+      date,
+    })
+    const stringifiedWeights = JSON.stringify(weights)
+    try {
+      await AsyncStorage.setItem('root', stringifiedWeights)
+      const updateWeightScreenFunction = this.props.navigation.getParam('update', () => {})
+      updateWeightScreenFunction()
+    } catch(err) {
+      console.error('err', err)
+    }
+  }
+
+  getDate = props => {
+    const { state } = props.navigation;
+    if (state && state.params) {
+      return {
+        weight: state.params.value || '90',
+        date: state.params.date || new Date(),
+      };
+    }
+    return {
+      weight: "90",
+      date: new Date(),
+    };
+  };
+
+  handleOpenDatePicker = () => {
+    DatePickerAndroid.open({
+      date: this.state.date,
+    }).then(({ action, year, month, day }) => {
+      if (DatePickerAndroid.dismissedAction !== action) {
+        const date = new Date(year, month, day);
+        this.onChangeDate(date);
+      }
+    });
   };
 
   onChangeWeight = value => {
-    this.setState({ weight: value });
+    this.setState({
+      weight: value,
+    });
   };
+
   onChangeDate = value => {
-    this.setState({ date: value });
+    this.setState({
+      date: value,
+    });
   };
 
   onPressButton = () => {
-    console.log(this.state.weight);
-    console.log(this.state.date);
+    const { weight, date } = this.state
+    this.saveNewWeights(weight, date)
+    this.props.navigation.goBack()
   };
 
   render() {
+    console.log("params", this.props.navigation.state.params);
     return (
       <View style={styles.mainView}>
         <View style={styles.container}>
-          <Text style={{ fontSize: 30 }}>{this.state.BMI}</Text>
           <Input
             onChangeText={this.onChangeWeight}
-            label='Weight'
-            keyboardType='numeric'
+            label="Weight"
+            keyboardType="numeric"
             value={this.state.weight}
-            placeholder='Weight'
+            placeholder="Weight"
           />
           <Input
             onChangeText={this.onChangeDate}
-            label='Date'
-            keyboardType='numeric'
-            value={this.state.date}
-            placeholder='Date'
+            label="Date"
+            keyboardType="numeric"
+            value={this.state.date.toLocaleDateString()}
+            placeholder="Date"
+            editable={false}
           />
-
-          <Button onPressButton={this.onPressButton} text='Save' />
+          {Platform.OS === "android" && (
+            <Button onPress={this.handleOpenDatePicker} text="SET DATE" />
+          )}
+          {Platform.OS === "ios" && (
+            <DatePickerIOS
+              mode="date"
+              style={styles.datePickerIos}
+              date={this.state.date}
+              onDateChange={this.onChangeDate}
+            />
+          )}
+          <Button onPress={this.onPressButton} text="SAVE" />
         </View>
       </View>
     );
@@ -51,17 +121,20 @@ export default class AddWeightScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     marginHorizontal: 20,
-    marginVertical: 40
+    marginVertical: 40,
+  },
+  datePickerIos: {
+    width: "100%",
   },
   listContainer: {
     flex: 1,
-    width: '100%',
-    marginTop: 20
+    width: "100%",
+    marginTop: 20,
   },
   mainView: {
     flex: 1,
-    backgroundColor: '#D7E8FF'
-  }
+    backgroundColor: "#D7E8FF",
+  },
 });

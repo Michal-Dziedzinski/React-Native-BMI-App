@@ -1,26 +1,30 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
-export const Button = props => {
+const Button = (props) => {
   return (
     <View style={styles.buttonWrapper}>
       <TouchableOpacity
-        style={[styles.button, { backgroundColor: props.color }]}
-        onPress={props.onPressButton}>
+        style={[styles.button, {backgroundColor: props.color}]}
+        onPress={props.onPress}
+      >
         <Text style={styles.buttonText}>{props.text}</Text>
       </TouchableOpacity>
     </View>
-  );
+  )
 };
 
 Button.defaultProps = {
   color: '#0080FF'
 };
 
+export default Button;
+
+
 const styles = StyleSheet.create({
   buttonWrapper: {
     width: '100%',
-    marginTop: 20
+    marginTop: 20,
   },
   button: {
     alignItems: 'center',
@@ -29,6 +33,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   }
 });

@@ -1,35 +1,39 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native'
 
-export const Input = props => {
+const Input = (props) => {
   return (
     <View style={styles.inputWrapper}>
       {props.label ? <Text style={styles.label}>{props.label}</Text> : null}
       <TextInput
-        onChangeText={props.onChangeText}
         style={styles.input}
+        onChangeText={props.onChangeText}
         value={props.value}
         keyboardType={props.keyboardType}
         {...props}
       />
     </View>
-  );
+  )
 };
+
+export default Input;
+
 
 const styles = StyleSheet.create({
   input: {
     width: '100%',
-    height: 40,
     borderBottomWidth: 3,
+    borderColor: '#0080FF',
+    height: 40,
     borderRadius: 3,
-    borderColor: '#0080FF'
+    fontWeight: 'bold',
   },
   inputWrapper: {
     width: '100%',
-    marginVertical: 10
+    marginVertical: 10,
   },
   label: {
     color: '#0080FF',
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
 });
